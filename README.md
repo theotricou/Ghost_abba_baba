@@ -1,3 +1,3 @@
 # Ghost_abba_baba
 
-codes and datas from the paper XXXXXXXXXXXXXXXXX
+code and data from the paper XXXXXXXXXXXXXXXXX
