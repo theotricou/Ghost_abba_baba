@@ -1,0 +1,48 @@
+################################################################################
+##### build_ms_command.py parameters.
+# Effective population size.
+#
+NE=100000
+#
+#
+# The mutation rate per locus.
+#
+MU=1e-7
+#
+#
+# Number of generation between the coalescent merging leading to the root of
+# the tree.
+# This value is used to convert the simulated tree branch length
+# in coalescent time.
+#
+N_GENERATION=1000000
+#
+#
+# Mean Length of the locus to simulate.
+#
+LOCI_LENGTH=1
+#
+#
+# The number of chromosomes that will be simulated per individual.
+#
+PLOIDY=1
+#
+#
+##### ms_simulation.R parameters.
+# Number of ms simulation replicate.
+#
+N_SIMULATION=100
+#
+#
+# The number of cores that the independent repetitions from N_SIMULATION will
+# be distributed on. Must be 1 on Windows, and should also be 1 when using R
+# in a graphical environment (e.g. Rstudio).
+#
+N_CORE=6
+#
+#
+# SEED used by the simulate function in coala.
+SEED=1123581321
+#
+################################################################################
+################################################################################
