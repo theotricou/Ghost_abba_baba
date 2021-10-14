@@ -2,56 +2,45 @@
 # Theo Tricou
 
 
-# download at https://datadryad.org/stash/dataset/doi:10.5061/dryad.cr1496b
+# data from barlow 2018
 
-for i in gz;do
-  gzip -d $i
-done
+wget  https://datadryad.org/stash/downloads/file_stream/13237 \
+      https://datadryad.org/stash/downloads/file_stream/13233 \
+      https://datadryad.org/stash/downloads/file_stream/13224 \
+      https://datadryad.org/stash/downloads/file_stream/13225 \
+      https://datadryad.org/stash/downloads/file_stream/13226
 
-for i in *fa; do
-  B="$(cut -d'_' -f2 <<<"$i")"
-  mkdir $B
-  mv $i $B/
-done
+gunzip *.fa.gz
 
-# cut file in scaffolds
-for i in */;do
-  cd $i
-  csplit *.fa '/scaffold/' '{*}'
-  for j in xx*; do
-    sed -i "s/scaffold.*/$i/g" $j
-  done
-  cd ..
-done
 
-# concate ali by species
-mkdir polar_ali
-cd NB
-for i in xx*; do
-  cat ../Adm1/$i ../235/$i ../NB/$i ../Uamericanus/$i > ../polar_ali/$i # selecet 4 species
-done
-cd ../polar_ali
+# Script from barlow 2018
 
-rm xx00
-file=
-for i in  xx*[0-9]; do seaview -convert -sites  $i; done # correct for unaligned extremities
-rm *fa
-for i in *fst; do
-  if [ "$i" == "xx01.fst" ]; then # skip first msa to concate with second msa
-    cp $i $i\_n
-    file=$i\_n
-  else # concate msa with previous reste and cut in windows of 1000000
-    seaview -o $i\_n -concatenate $i $file
-    msa_split -w 1000000,0 $i\_n --out-root $i 2> log
-    rm $file
-    # file=$i\_n
-    file=`tail -n 2 log | grep -ho "xx.*fa"`
-  fi
-done
-rm *_n *[0-9] log
+git clone git@github.com:jacahill/Admixture.git # installation instruction at https://github.com/jacahill/Admixture
 
-for i in *fa;do # correcte the space in > NAME and remove non-snp sites
-  sed -i "s/> />/" $i
-  snp-sites -c $i
-done
-rm *fa
+/Admixture/D_stat Adm1_rep1_all.fa 235_rep1_all.fa \
+  191Y_rep1_all.fa Uamericanus_all.fa 1000000 > ghost_bear.txt
+
+python2 Admixture/D-stat_parser.py ghost_bear.txt 1 > D_ghost_bear.txt
+
+python2 Admixture/weighted_block_jackknife.py ghost_bear.txt 1000000 > Err_ghost_bear.txt
+
+# Simple commande to compute the Z-score from the D-statistic and the error
+
+calc(){ awk "BEGIN { print "$*" }"; }
+
+D=`awk '{print $2}' D_ghost_bear.txt`
+E=`awk '{print $2}' Err_ghost_bear.txt`
+calc $D/$E > Z_ghost_bear
+
+
+/Admixture/D_stat Adm1_rep1_all.fa 235_rep1_all.fa \
+  NB_rep1_all.fa Uamericanus_all.fa 1000000 > ingroup_bear.txt
+
+python2 ~/GitHub/Admixture/D-stat_parser.py ingroup_bear.txt 1 > D_ingroup_bear.txt
+
+python2 ~/GitHub/Admixture/weighted_block_jackknife.py ingroup_bear.txt 1000000 > Err_ingroup_bear.txt
+
+
+D=`awk '{print $2}' D_ingroup_bear.txt`
+E=`awk '{print $2}' Err_ingroup_bear.txt`
+calc $D/$E > Z_ingroup_bear

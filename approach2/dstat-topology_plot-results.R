@@ -1,5 +1,5 @@
 ## march, 16 2021
-## data used here is produced by function ComputeAll() in dstat-topology.R 
+## data used here is produced by function ComputeAll() in dstat-topology.R
 
 ##################
 ## DEPENDENCIES ##
@@ -32,7 +32,19 @@ for (i in 1:length(all)) {
 	DF<-rbind(DF, data.frame(alpha=X2$alpha, thres=rep(sequence[i],nrow(X2)), Nreal=X2$Nreal, Ntotal=X2$Ntotal, PropErroneousInterp.mean=X2[,all[i]]))
 }
 
-ggplot(DF, aes(x=thres, y=PropErroneousInterp.mean, group=thres)) + geom_boxplot(aes(fill=factor(alpha)), varwidth=TRUE) + facet_wrap(~alpha, nrow=5) + xlab("Threshold of the relative distance to outgroup considered") + ylab("Proportion of erroneous interpretations of the D-statistics") + labs(fill="Phylogenetic\ndistance\neffect")
+pdf(file = "figure.pdf", width = 14, height = 14)
+
+ggplot(DF, aes(x=thres, y=PropErroneousInterp.mean, group=thres)) +
+	geom_boxplot(aes(fill=factor(alpha)), varwidth=TRUE) +
+	facet_wrap(~alpha, nrow=3, dir = "v", labeller = label_both) +
+	xlab("Threshold of the relative distance to outgroup considered") +
+	ylab("Proportion of erroneous interpretations of the D-statistics") +
+	labs(fill="Alpha") +
+	theme(legend.position = c(0.75, 0.15), text = element_text(size=25),
+		legend.direction = "horizontal") +
+	scale_x_continuous(breaks=seq(0, 0.9, 0.1))
+
+dev.off()
 
 ############
 ## FIGURE - same but only for alpha = 0
@@ -64,7 +76,3 @@ for (i in unique(DF$alpha)) {
 }
 
 ggplot(DF2, aes(x=factor(alpha), y=thres)) + geom_tile(aes(fill=erroneous)) + facet_wrap(~Nreal) +  scale_fill_gradient2(low="blue", high="red",midpoint=0.5, limits=c(0,1), mid="pink") + labs(fill="Mean proportion\nof erroneous interpretation") + xlab("Phylogenetic distance effect on introgressions") + ylab("Threshold of the relative distance to outgroup considered")
-
-
-
-
