@@ -1,6 +1,6 @@
-# Ghost lineages deceive introgression tests and call for a new null hypothesis
+# Ghost Lineages Highly Influence the Interpretation of Introgression Tests
 
-This repository contains the data and code associated with the manuscript entitled "Ghost lineages deceive introgression tests and call for a new null hypothesis" by T Tricou, E Tannier and DM de Vienne.
+This repository contains the data and code associated with the manuscript entitled "Ghost Lineages Highly Influence the Interpretation of Introgression Tests" by T Tricou, E Tannier and DM de Vienne.
 
 
 
